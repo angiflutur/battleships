@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { getUserDetails } from './api';
+import { getUserDetails } from '../api';
 
 interface UserDetailsScreenProps {
   route: any;  
@@ -8,7 +8,6 @@ interface UserDetailsScreenProps {
 
 const UserDetailsScreen: React.FC<UserDetailsScreenProps> = ({ route }) => {
   const { accessToken } = route.params;
-console.log(accessToken);
   const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
@@ -16,7 +15,6 @@ console.log(accessToken);
       try {
         const data = await getUserDetails(accessToken);
         setUserData(data);
-        console.log("User details data:", data); 
     
       } catch (error) {
         console.error("Error getting user details:", error);
