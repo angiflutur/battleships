@@ -53,6 +53,10 @@ const UserDetailsScreen: React.FC<UserDetailsScreenProps> = ({
     navigation.goBack();
   };
 
+  const handleListAllGames = () => {
+    navigation.navigate("Lobby", { games });
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>User Details</Text>
@@ -64,20 +68,10 @@ const UserDetailsScreen: React.FC<UserDetailsScreenProps> = ({
           <Text>Games played: {userData.gamesPlayed}</Text>
           <Text>Games won: {userData.gamesWon}</Text>
 
-          <Text style={styles.title}>List All Games</Text>
+          <TouchableOpacity onPress={handleListAllGames}>
+            <Text style={styles.button}>List All Games</Text>
+          </TouchableOpacity>
 
-          {games.map((game, index) => (
-            <View key={index} style={styles.card}>
-              <Text>Game {index + 1}</Text>
-              <Text>Status: {game.status}</Text>
-              <Text>Player1: {game.player1.email}</Text>
-              {game.player2 ? (
-                <Text>Player2: {game.player2.email}</Text>
-              ) : (
-                <Text>Waiting for player 2...</Text>
-              )}
-            </View>
-          ))}
         </React.Fragment>
       )}
     </ScrollView>
@@ -96,13 +90,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
   },
-  card: {
-    width: "100%",
-    borderWidth: 100,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
+  button: {
+    fontSize: 18,
+    color: "blue",
+    textDecorationLine: "underline",
+    marginTop: 10,
   },
 });
 
