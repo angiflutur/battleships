@@ -100,12 +100,13 @@ export const createGame = async (accessToken: string) => {
   }
 };
 
-export const joinGame = async (id: string): Promise<Game> => {
+export const joinGame = async (id: string,  accessToken: string) => {
   try {
     const response = await fetch(`${GAME_ENDPOINT}/join/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        'Authorization': `Bearer ${accessToken}`,
       },
     });
     const data = await response.json();

@@ -6,6 +6,7 @@ export interface User {
 }
 
 export interface Game {
+  id: string;
   status: string;
   moves: GameMove[];
   player1: User;
