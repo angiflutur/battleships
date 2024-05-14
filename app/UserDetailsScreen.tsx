@@ -20,7 +20,6 @@ const UserDetailsScreen: React.FC<UserDetailsScreenProps> = ({
 }) => {
   const { accessToken } = route.params;
   const [userData, setUserData] = useState<any>(null);
-  const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -35,27 +34,11 @@ const UserDetailsScreen: React.FC<UserDetailsScreenProps> = ({
     fetchUserDetails();
   }, [accessToken]);
 
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const gamesResponse = await getAllGames(accessToken);
-        setGames(gamesResponse);
-        console.log(gamesResponse);
-      } catch (error) {
-        console.error("Failed to fetch games:", error);
-      }
-    };
-
-    fetchGames(); // Apelăm funcția pentru a obține jocurile inițiale
-  }, []);
-
-  const navigateBack = () => {
-    navigation.goBack();
+  
+  const navigateToLobby = () => {
+    navigation.navigate("Lobby", { accessToken, userData });
   };
-
-  const handleListAllGames = () => {
-    navigation.navigate("Lobby", { games });
-  };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -68,8 +51,8 @@ const UserDetailsScreen: React.FC<UserDetailsScreenProps> = ({
           <Text>Games played: {userData.gamesPlayed}</Text>
           <Text>Games won: {userData.gamesWon}</Text>
 
-          <TouchableOpacity onPress={handleListAllGames}>
-            <Text style={styles.button}>List All Games</Text>
+          <TouchableOpacity onPress={navigateToLobby}>
+            <Text style={styles.button}>Lobby</Text>
           </TouchableOpacity>
 
         </React.Fragment>

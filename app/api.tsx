@@ -83,12 +83,13 @@ export const getAllGames = async (accessToken: string) => {
 
 
 
-export const createGame = async (): Promise<Game> => {
+export const createGame = async (accessToken: string) => {
   try {
     const response = await fetch(`${GAME_ENDPOINT}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": 'application/json',
+        Authorization: `Bearer ${accessToken}`
       },
     });
     const data = await response.json();
