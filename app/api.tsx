@@ -62,21 +62,26 @@ export const getUserDetails = async (accessToken: string) => {
   }
 };
 
-export const getAllGames = async (): Promise<Game[]> => {
+export const getAllGames = async (accessToken: string) => {
   try {
     const response = await fetch(`${GAME_ENDPOINT}`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": 'application/json',
+        Authorization: `Bearer ${accessToken}`
       },
     });
-    const data = await response.json();
-    return data.games;  
+    const responseData = await response.json();
+    const gamesData = responseData.games; // Accesăm direct proprietatea 'games' din răspunsul JSON
+    
+    return gamesData;  
   } catch (error) {
     console.error("Error getting all games:", error);
     throw error;
   }
 };
+
+
 
 export const createGame = async (): Promise<Game> => {
   try {

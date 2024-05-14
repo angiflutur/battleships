@@ -1,7 +1,15 @@
+export interface User {
+  id: number;
+  email: string;
+  passwordHash: string;
+  games: Game[];
+}
+
 export interface Game {
   status: string;
   moves: GameMove[];
-  playerToMove: number;
+  player1: User;
+  player2: User;
 }
 
 export interface GameMove {

@@ -1,32 +1,39 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { registerUser } from '../api'; 
-import { NavigationProp } from '@react-navigation/native';
+import { authenticateUser } from './api';
 
 interface Props {
-    navigation: NavigationProp<any>; 
-  }
-  
-  const RegisterScreen: React.FC<Props> = ({ navigation }) => {
+  navigation: any;
+}
+
+const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null | undefined>(null);
+  const [error, setError] = useState<string | null>(null);
 
-
-  const handleRegister = async () => {
+  const handleLogin = async () => {
     try {
-      const data = await registerUser(email, password); 
+      const data = await authenticateUser(email, password);
+      const accessToken = data.accessToken;
+      
+      if (accessToken) {
+        navigation.navigate('UserDetailsScreen', { accessToken });
+      } else {
+        setError('Autentificare esuata, contul nu exista.');
+      }
     } catch (error) {
+      console.error('Authentication error:', error);
+      setError('Autentificare esuata, contul nu exista.');
     }
   };
 
-  const navigateToLogin = () => {
-    navigation.navigate('LoginScreen'); 
+  const navigateToRegister = () => {
+    navigation.navigate('RegisterScreen');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -41,13 +48,13 @@ interface Props {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
+      {error && <Text style={styles.errorText}>{error}</Text>}
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.loginButton} onPress={navigateToLogin}>
-        <Text style={styles.loginButtonText}>Ai deja un cont? Conectează-te</Text>
+      <TouchableOpacity style={styles.registerButton} onPress={navigateToRegister}>
+        <Text style={styles.registerButtonText}>Nu ai un cont? Înregistrează-te</Text>
       </TouchableOpacity>
-
     </View>
   );
 };
@@ -86,13 +93,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  loginButton: {
+  registerButton: {
     marginTop: 10,
   },
-  loginButtonText: {
+  registerButtonText: {
     color: 'blue',
     fontSize: 16,
   },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
 });
 
-export default RegisterScreen;
+export default LoginScreen;
