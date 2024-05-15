@@ -16,7 +16,12 @@ interface MapConfigurationScreenProps {
 
 const MapConfigurationScreen: React.FC<MapConfigurationScreenProps> = ({ route, navigation }) => {
   const { gameId, accessToken } = route.params;
-  const [ships, setShips] = useState<Ship[]>([{ x: 'A', y: 1, size: 2, direction: 'HORIZONTAL' }]);
+  const [ships, setShips] = useState<Ship[]>([
+    { x: 'A', y: 1, size: 2, direction: 'HORIZONTAL' },
+    { x: 'B', y: 2, size: 2, direction: 'HORIZONTAL' },
+    { x: 'C', y: 3, size: 2, direction: 'HORIZONTAL' },
+    { x: 'D', y: 4, size: 2, direction: 'HORIZONTAL' },
+  ]);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const handleSendConfiguration = async () => {
@@ -29,17 +34,27 @@ const MapConfigurationScreen: React.FC<MapConfigurationScreenProps> = ({ route, 
         },
         body: JSON.stringify({ ships }),
       });
-      console.log(response);
+      
+      const responseData = await response.json();
+      console.log(responseData);
+
       if (!response.ok) {
-        alert('Failed to send map configuration');
+        console.error('Failed to send map configuration:', responseData);
+        Alert.alert('Error', `Failed to send map configuration: ${responseData.message || 'Unknown error'}`);
+      } else {
+        Alert.alert('Success', 'Map configuration sent successfully');
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error:', error);
       Alert.alert('Error', 'Failed to send map configuration');
     }
   };
 
   const handleAddShip = () => {
+    // if (ships.length >= 4 && ships.filter(ship => ship.size === 2).length >= 4) {
+    //   Alert.alert('Error', 'You already have 4 ships of size 2');
+    //   return;
+    // }
     setShips([...ships, { x: 'A', y: 1, size: 2, direction: 'HORIZONTAL' }]);
   };
 
@@ -205,16 +220,16 @@ const styles = StyleSheet.create({
   },
   shipContainer: {
     width: '70%',
+    marginBottom: 20,
   },
   label: {
     fontSize: 18,
-    marginTop:5, 
+    marginTop: 5,
   },
   pickerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
   pickerLabel: {
     width: 70,
     fontSize: 15,
