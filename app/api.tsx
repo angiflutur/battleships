@@ -3,6 +3,8 @@ const LOGIN_ENDPOINT = "http://163.172.177.98:8081/auth/login";
 const USER_DETAILS_ENDPOINT = "http://163.172.177.98:8081/user/details/me";
 const GAME_ENDPOINT = "http://163.172.177.98:8081/game";
 
+// AUTH
+// 1. POST: /auth/register - Create user
 export const registerUser = async (email: string, password: string) => {
   try {
     const response = await fetch(REGISTER_ENDPOINT, {
@@ -29,7 +31,7 @@ export const registerUser = async (email: string, password: string) => {
   }
 };
 
-
+// 2. POST: /auth/login - Authenticate user
 export const authenticateUser = async (email: string, password: string) => {
   try {
     const response = await fetch(LOGIN_ENDPOINT, {
@@ -56,7 +58,7 @@ export const authenticateUser = async (email: string, password: string) => {
   }
 };
 
-
+// 3. GET: user/details/me - User details
 export const getUserDetails = async (accessToken: string) => {
   try {
     const response = await fetch(USER_DETAILS_ENDPOINT, {
@@ -65,7 +67,6 @@ export const getUserDetails = async (accessToken: string) => {
       },
     });
     const data = await response.json();
-    console.log("User details data:", data);
     return data;
   } catch (error) {
     console.error("Error getting user details:", error);
@@ -73,6 +74,9 @@ export const getUserDetails = async (accessToken: string) => {
   }
 };
 
+
+// GAME
+// 4. GET: /game - Get all games
 export const getAllGames = async (accessToken: string) => {
   try {
     const response = await fetch(`${GAME_ENDPOINT}`, {
@@ -92,6 +96,7 @@ export const getAllGames = async (accessToken: string) => {
   }
 };
 
+// 5. POST: /game - Create game
 export const createGame = async (accessToken: string) => {
   try {
     const response = await fetch(`${GAME_ENDPOINT}`, {
@@ -109,6 +114,7 @@ export const createGame = async (accessToken: string) => {
   }
 };
 
+// 6. POST: /game/join/{id} - Join game
 export const joinGame = async (id: string, accessToken: string) => {
   try {
     const response = await fetch(`${GAME_ENDPOINT}/join/${id}`, {
@@ -127,6 +133,28 @@ export const joinGame = async (id: string, accessToken: string) => {
     return data; 
   } catch (error) {
     console.error("Error joining game:", error);
+    throw error;
+  }
+};
+
+// 7. GET: /game/{id} - Get game details using the ID
+export const getGameDetails = async (id: string, accessToken: string) => {
+  try {
+    const response = await fetch(`${GAME_ENDPOINT}/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to get game details");
+    }
+    return data; 
+  } catch (error) {
+    console.error("Error getting game details:", error);
     throw error;
   }
 };

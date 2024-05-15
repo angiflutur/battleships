@@ -13,9 +13,10 @@ import { createGame, getAllGames, joinGame } from "./api";
 
 interface LobbyScreenProps {
   route: any;
+  navigation: any;
 }
 
-const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
+const Lobby: React.FC<LobbyScreenProps> = ({ route, navigation }) => {
   const {
     accessToken,
     userData,
@@ -38,7 +39,7 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
     try {
       const newGame = await createGame(accessToken);
       console.log("New game created:", newGame);
-      fetchGames(); 
+      fetchGames();
     } catch (error) {
       console.error("Failed to create game:", error);
     }
@@ -49,11 +50,15 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
       const joinedGame = await joinGame(gameId, accessToken);
       console.log("Joined game:", joinedGame);
       setError(null);
-      fetchGames(); 
+      navigation.navigate('GameDetailsScreen', { gameId, accessToken });
     } catch (err: any) {
       console.error("Failed to join game:", err.message);
       setError(err.message || "Failed to join game.");
     }
+  };
+
+  const handleViewGameDetails = (gameId: string) => {
+    navigation.navigate('GameDetailsScreen', { gameId, accessToken });
   };
 
   const fetchGames = async () => {
@@ -64,7 +69,7 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
       console.error("Failed to fetch games:", error);
     }
   };
-  
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
@@ -155,6 +160,12 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
           >
             <Text style={styles.joinButtonText}>Join Game</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.detailsButton}
+            onPress={() => handleViewGameDetails(game.id)}
+          >
+            <Text style={styles.detailsButtonText}>Game Details</Text>
+          </TouchableOpacity>
         </View>
       ))}
     </ScrollView>
@@ -205,6 +216,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   joinButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  detailsButton: {
+    marginTop: 10,
+    paddingVertical: 10,
+    backgroundColor: "#17a2b8",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  detailsButtonText: {
     color: "white",
     fontWeight: "bold",
   },
