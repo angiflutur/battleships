@@ -18,9 +18,9 @@ const MapConfigurationScreen: React.FC<MapConfigurationScreenProps> = ({ route, 
   const { gameId, accessToken } = route.params;
   const [ships, setShips] = useState<Ship[]>([
     { x: 'A', y: 1, size: 2, direction: 'HORIZONTAL' },
-    { x: 'B', y: 2, size: 2, direction: 'HORIZONTAL' },
-    { x: 'C', y: 3, size: 2, direction: 'HORIZONTAL' },
-    { x: 'D', y: 4, size: 2, direction: 'HORIZONTAL' },
+    { x: 'B', y: 2, size: 3, direction: 'HORIZONTAL' },
+    { x: 'C', y: 3, size: 3, direction: 'HORIZONTAL' },
+    { x: 'D', y: 4, size: 3, direction: 'HORIZONTAL' },
   ]);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -48,14 +48,6 @@ const MapConfigurationScreen: React.FC<MapConfigurationScreenProps> = ({ route, 
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to send map configuration');
     }
-  };
-
-  const handleAddShip = () => {
-    // if (ships.length >= 4 && ships.filter(ship => ship.size === 2).length >= 4) {
-    //   Alert.alert('Error', 'You already have 4 ships of size 2');
-    //   return;
-    // }
-    setShips([...ships, { x: 'A', y: 1, size: 2, direction: 'HORIZONTAL' }]);
   };
 
   const xOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -101,7 +93,7 @@ const MapConfigurationScreen: React.FC<MapConfigurationScreenProps> = ({ route, 
     }
     return table;
   };
-
+console.log(ships);
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Map Configuration</Text>
@@ -180,7 +172,7 @@ const MapConfigurationScreen: React.FC<MapConfigurationScreenProps> = ({ route, 
           </View>
         </View>
       ))}
-      <Button title="Add Ship" onPress={handleAddShip} />
+
       <Button title="Send Configuration" onPress={handleSendConfiguration} />
     </ScrollView>
   );
