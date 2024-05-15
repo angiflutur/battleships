@@ -1,10 +1,7 @@
-import { Game } from "./types";
-
 const REGISTER_ENDPOINT = "http://163.172.177.98:8081/auth/register";
 const LOGIN_ENDPOINT = "http://163.172.177.98:8081/auth/login";
 const USER_DETAILS_ENDPOINT = "http://163.172.177.98:8081/user/details/me";
-const BASE_URL = "http://163.172.177.98:8081";
-const GAME_ENDPOINT = `${BASE_URL}/game`;
+const GAME_ENDPOINT = "http://163.172.177.98:8081/game";
 
 export const registerUser = async (email: string, password: string) => {
   try {
@@ -18,12 +15,20 @@ export const registerUser = async (email: string, password: string) => {
         password: password,
       }),
     });
+
     const data = await response.json();
-    console.log(data);
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to register user");
+    }
+
+    return data;
   } catch (error) {
     console.error("Error registering user:", error);
+    throw error;
   }
 };
+
 
 export const authenticateUser = async (email: string, password: string) => {
   try {
@@ -37,14 +42,20 @@ export const authenticateUser = async (email: string, password: string) => {
         password: password,
       }),
     });
+
     const data = await response.json();
-    console.log(data);
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to authenticate user");
+    }
+
     return data;
   } catch (error) {
     console.error("Error authenticating user:", error);
     throw error;
   }
 };
+
 
 export const getUserDetails = async (accessToken: string) => {
   try {
@@ -81,8 +92,6 @@ export const getAllGames = async (accessToken: string) => {
   }
 };
 
-
-
 export const createGame = async (accessToken: string) => {
   try {
     const response = await fetch(`${GAME_ENDPOINT}`, {
@@ -100,7 +109,7 @@ export const createGame = async (accessToken: string) => {
   }
 };
 
-export const joinGame = async (id: string,  accessToken: string) => {
+export const joinGame = async (id: string, accessToken: string) => {
   try {
     const response = await fetch(`${GAME_ENDPOINT}/join/${id}`, {
       method: "POST",
@@ -110,9 +119,15 @@ export const joinGame = async (id: string,  accessToken: string) => {
       },
     });
     const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to join game");
+    }
+
     return data; 
   } catch (error) {
     console.error("Error joining game:", error);
     throw error;
   }
 };
+

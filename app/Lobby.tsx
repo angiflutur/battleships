@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, StyleSheet, View, TouchableOpacity, TextInput, Button } from "react-native";
+import {
+  ScrollView,
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  TextInput,
+  Button,
+} from "react-native";
 import { Game } from "./types";
 import { createGame, getAllGames, joinGame } from "./api";
 
@@ -8,11 +16,15 @@ interface LobbyScreenProps {
 }
 
 const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
-  const { accessToken, userData }: { games: Game[], accessToken: string, userData: any } = route.params;
+  const {
+    accessToken,
+    userData,
+  }: { games: Game[]; accessToken: string; userData: any } = route.params;
 
   const [games, setGames] = useState<Game[]>([]);
   const [showMyGames, setShowMyGames] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleShowMyGames = () => {
     setShowMyGames(true);
@@ -26,6 +38,7 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
     try {
       const newGame = await createGame(accessToken);
       console.log("New game created:", newGame);
+      fetchGames(); 
     } catch (error) {
       console.error("Failed to create game:", error);
     }
@@ -35,8 +48,11 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
     try {
       const joinedGame = await joinGame(gameId, accessToken);
       console.log("Joined game:", joinedGame);
-    } catch (error) {
-      console.error("Failed to join game:", error);
+      setError(null);
+      fetchGames(); 
+    } catch (err: any) {
+      console.error("Failed to join game:", err.message);
+      setError(err.message || "Failed to join game.");
     }
   };
 
@@ -48,36 +64,67 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
       console.error("Failed to fetch games:", error);
     }
   };
+  
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (error) {
+      timeoutId = setTimeout(() => {
+        setError(null);
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [error]);
 
   useEffect(() => {
     fetchGames();
   }, []);
 
   const filteredGames = showMyGames
-    ? games.filter((game) => game.player1.email === userData.user.email || (game.player2 && game.player2.email === userData.user.email))
+    ? games.filter(
+        (game) =>
+          game.player1.email === userData.user.email ||
+          (game.player2 && game.player2.email === userData.user.email)
+      )
     : games;
 
   const filteredGamesByKeyword = searchKeyword
-    ? filteredGames.filter(game =>
-        game.player1.email.includes(searchKeyword) || (game.player2 && game.player2.email.includes(searchKeyword))
+    ? filteredGames.filter(
+        (game) =>
+          game.player1.email.includes(searchKeyword) ||
+          (game.player2 && game.player2.email.includes(searchKeyword))
       )
     : filteredGames;
 
   const handleScroll = (event: any) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
     const paddingToBottom = 20;
-    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+    if (
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom
+    ) {
       fetchGames();
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} onScroll={handleScroll}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      onScroll={handleScroll}
+    >
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleShowMyGames} style={[styles.button, showMyGames ? styles.activeButton : null]}>
+        <TouchableOpacity
+          onPress={handleShowMyGames}
+          style={[styles.button, showMyGames ? styles.activeButton : null]}
+        >
           <Text style={styles.buttonText}>My Games</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleShowAllGames} style={[styles.button, !showMyGames ? styles.activeButton : null]}>
+        <TouchableOpacity
+          onPress={handleShowAllGames}
+          style={[styles.button, !showMyGames ? styles.activeButton : null]}
+        >
           <Text style={styles.buttonText}>All Games</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleCreateGame} style={styles.button}>
@@ -91,6 +138,7 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
         placeholder="Search by email"
       />
       <Button title="Search" onPress={fetchGames} />
+      {error && <Text style={styles.errorText}>{error}</Text>}
       {filteredGamesByKeyword.map((game, index) => (
         <View key={index} style={styles.card}>
           <Text>Game {index + 1}</Text>
@@ -101,7 +149,10 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
           ) : (
             <Text>Waiting for player 2...</Text>
           )}
-          <TouchableOpacity style={styles.joinButton} onPress={() => handleJoinGame(game.id)}>
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() => handleJoinGame(game.id)}
+          >
             <Text style={styles.joinButtonText}>Join Game</Text>
           </TouchableOpacity>
         </View>
@@ -122,7 +173,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginBottom: 10,
-    width: '100%',
+    width: "100%",
   },
   button: {
     paddingVertical: 10,
@@ -159,12 +210,16 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 10,
-    width: '90%',
+    width: "90%",
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 10,
   },
 });
 

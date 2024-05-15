@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { authenticateUser } from './api';
 
@@ -15,21 +15,34 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     try {
       const data = await authenticateUser(email, password);
       const accessToken = data.accessToken;
-      
+
       if (accessToken) {
         navigation.navigate('UserDetailsScreen', { accessToken });
       } else {
-        setError('Autentificare esuata, contul nu exista.');
+        setError('Autentificare eșuată, contul nu există.');
       }
-    } catch (error) {
-      console.error('Authentication error:', error);
-      setError('Autentificare esuata, contul nu exista.');
+    } catch (err: any) {
+      console.error('Authentication error:', err);
+      setError(err.message || 'Autentificare eșuată, contul nu există.');
     }
   };
 
   const navigateToRegister = () => {
     navigation.navigate('RegisterScreen');
   };
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (error) {
+      timeoutId = setTimeout(() => {
+        setError(null);
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [error]);
 
   return (
     <View style={styles.container}>
@@ -103,6 +116,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 10,
+    marginRight:25,
+    marginLeft: 25,
   },
 });
 
