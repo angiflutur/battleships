@@ -6,11 +6,16 @@ import { Game } from "./types";
 interface GameDetailsScreenProps {
   route: any;
   navigation: any;
+  user: any;
 }
 
-const GameDetailsScreen: React.FC<GameDetailsScreenProps> = ({ route, navigation }) => {
-  const { gameId, accessToken } = route.params;
+const GameDetailsScreen: React.FC<GameDetailsScreenProps> = ({
+  route,
+  navigation,
+}) => {
+  const { gameId, accessToken, userData } = route.params;
   const [gameDetails, setGameDetails] = useState<Game | null>(null);
+  const currentUserEmail = userData.user.email;
 
   useEffect(() => {
     const fetchGameDetails = async () => {
@@ -26,26 +31,41 @@ const GameDetailsScreen: React.FC<GameDetailsScreenProps> = ({ route, navigation
   }, [gameId, accessToken]);
 
   const handleMapConfiguration = () => {
-    navigation.navigate('MapConfigurationScreen', { gameId, accessToken });
+    navigation.navigate("MapConfigurationScreen", { gameId, accessToken });
   };
-  
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {gameDetails ? (
         <View style={styles.card}>
           <Text style={styles.title}>Game Details</Text>
           <Text style={styles.label}>Status: {gameDetails.status}</Text>
-          <Text style={styles.label}>Player 1: {gameDetails.player1.email}</Text>
+          <Text style={styles.label}>
+            Player 1: {gameDetails.player1.email}
+          </Text>
           {gameDetails.player2 && (
-            <Text style={styles.label}>Player 2: {gameDetails.player2.email}</Text>
+            <Text style={styles.label}>
+              Player 2: {gameDetails.player2.email}
+            </Text>
           )}
           <Text style={styles.label}>Moves:</Text>
           {gameDetails.moves.map((move, index) => (
             <Text key={index} style={styles.value}>
-              {`Move ${index + 1}: (${move.x}, ${move.y}) - ${move.result ? "Hit" : "Miss"}`}
+              {`Move ${index + 1}: (${move.x}, ${move.y}) - ${
+                move.result ? "Hit" : "Miss"
+              }`}
             </Text>
           ))}
-          <Button title="Map Configuration" onPress={handleMapConfiguration} />
+          <Button
+            title="Map Configuration"
+            onPress={handleMapConfiguration}
+            disabled={
+              gameDetails &&
+              gameDetails.player1.email !== currentUserEmail &&
+              (!gameDetails.player2 ||
+                gameDetails.player2.email !== currentUserEmail)
+            }
+          />
         </View>
       ) : (
         <Text>Loading game details...</Text>
@@ -66,7 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
-    width: '100%',
+    width: "100%",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,

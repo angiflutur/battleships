@@ -58,7 +58,7 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route, navigation }) => {
   };
 
   const handleViewGameDetails = (gameId: string) => {
-    navigation.navigate('GameDetailsScreen', { gameId, accessToken });
+    navigation.navigate('GameDetailsScreen', { gameId, accessToken, userData});
   };
 
   const fetchGames = async () => {
