@@ -8,7 +8,7 @@ interface LobbyScreenProps {
 }
 
 const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
-  const { accessToken, userData }: { games: Game[], accessToken: string, userData: any} = route.params;
+  const { accessToken, userData }: { games: Game[], accessToken: string, userData: any } = route.params;
 
   const [games, setGames] = useState<Game[]>([]);
   const [showMyGames, setShowMyGames] = useState(true);
@@ -92,7 +92,7 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
       />
       <Button title="Search" onPress={fetchGames} />
       {filteredGamesByKeyword.map((game, index) => (
-        <TouchableOpacity key={index} style={styles.card} onPress={() => handleJoinGame(game.id)}>
+        <View key={index} style={styles.card}>
           <Text>Game {index + 1}</Text>
           <Text>Status: {game.status}</Text>
           <Text>Player1: {game.player1.email}</Text>
@@ -101,7 +101,10 @@ const Lobby: React.FC<LobbyScreenProps> = ({ route }) => {
           ) : (
             <Text>Waiting for player 2...</Text>
           )}
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.joinButton} onPress={() => handleJoinGame(game.id)}>
+            <Text style={styles.joinButtonText}>Join Game</Text>
+          </TouchableOpacity>
+        </View>
       ))}
     </ScrollView>
   );
@@ -113,32 +116,46 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
+    padding: 10,
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
     marginBottom: 10,
+    width: '100%',
   },
   button: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: "#ccc",
+    backgroundColor: "#007bff",
     borderRadius: 5,
   },
   activeButton: {
-    backgroundColor: "blue",
+    backgroundColor: "#0056b3",
   },
   buttonText: {
     color: "white",
     fontWeight: "bold",
   },
   card: {
-    width: "80%",
+    width: "90%",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
     padding: 20,
     marginBottom: 10,
+    backgroundColor: "#f9f9f9",
+  },
+  joinButton: {
+    marginTop: 10,
+    paddingVertical: 10,
+    backgroundColor: "#28a745",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  joinButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
   input: {
     height: 40,
@@ -147,6 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 10,
+    width: '90%',
   },
 });
 

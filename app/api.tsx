@@ -72,7 +72,7 @@ export const getAllGames = async (accessToken: string) => {
       },
     });
     const responseData = await response.json();
-    const gamesData = responseData.games; // Accesăm direct proprietatea 'games' din răspunsul JSON
+    const gamesData = responseData.games;
     
     return gamesData;  
   } catch (error) {

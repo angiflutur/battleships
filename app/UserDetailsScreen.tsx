@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getAllGames, getUserDetails } from "./api";
+import { getUserDetails } from "./api";
 import { Game } from "./types";
 
 interface UserDetailsScreenProps {
@@ -34,28 +34,30 @@ const UserDetailsScreen: React.FC<UserDetailsScreenProps> = ({
     fetchUserDetails();
   }, [accessToken]);
 
-  
   const navigateToLobby = () => {
     navigation.navigate("Lobby", { accessToken, userData });
   };
-  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>User Details</Text>
       {userData && (
-        <React.Fragment>
-          <Text>Email: {userData.user.email}</Text>
-          <Text>Current games playing: {userData.currentlyGamesPlaying}</Text>
-          <Text>Games lost: {userData.gamesLost}</Text>
-          <Text>Games played: {userData.gamesPlayed}</Text>
-          <Text>Games won: {userData.gamesWon}</Text>
+        <View style={styles.card}>
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.value}>{userData.user.email}</Text>
+          <Text style={styles.label}>Current games playing:</Text>
+          <Text style={styles.value}>{userData.currentlyGamesPlaying}</Text>
+          <Text style={styles.label}>Games lost:</Text>
+          <Text style={styles.value}>{userData.gamesLost}</Text>
+          <Text style={styles.label}>Games played:</Text>
+          <Text style={styles.value}>{userData.gamesPlayed}</Text>
+          <Text style={styles.label}>Games won:</Text>
+          <Text style={styles.value}>{userData.gamesWon}</Text>
 
-          <TouchableOpacity onPress={navigateToLobby}>
-            <Text style={styles.button}>Lobby</Text>
+          <TouchableOpacity style={styles.buttonContainer} onPress={navigateToLobby}>
+            <Text style={styles.buttonText}>Go to Lobby</Text>
           </TouchableOpacity>
-
-        </React.Fragment>
+        </View>
       )}
     </ScrollView>
   );
@@ -66,18 +68,48 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
+    padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "#333",
   },
-  button: {
-    fontSize: 18,
-    color: "blue",
-    textDecorationLine: "underline",
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+    width: '100%',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#666",
     marginTop: 10,
+  },
+  value: {
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 10,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    backgroundColor: "#007bff",
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 
