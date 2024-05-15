@@ -21,7 +21,7 @@ export const registerUser = async (email: string, password: string) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to register user");
+      alert(data.message || "Failed to register user");
     }
 
     return data;
@@ -48,7 +48,7 @@ export const authenticateUser = async (email: string, password: string) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to authenticate user");
+      alert(data.message || "Failed to authenticate user");
     }
 
     return data;
@@ -127,7 +127,7 @@ export const joinGame = async (id: string, accessToken: string) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to join game");
+      alert(data.message || "Failed to join game");
     }
 
     return data; 
@@ -150,7 +150,7 @@ export const getGameDetails = async (id: string, accessToken: string) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to get game details");
+     alert(data.message || "Failed to get game details");
     }
     return data; 
   } catch (error) {

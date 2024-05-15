@@ -19,3 +19,10 @@ export interface GameMove {
   result: boolean;
   playerId: number;
 }
+
+export interface Ship{
+  x: string;
+  y: number;
+  size: number;
+  direction: string;
+}

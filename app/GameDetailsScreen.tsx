@@ -24,6 +24,10 @@ const GameDetailsScreen: React.FC<GameDetailsScreenProps> = ({ route, navigation
 
     fetchGameDetails();
   }, [gameId, accessToken]);
+
+  const handleMapConfiguration = () => {
+    navigation.navigate('MapConfigurationScreen', { gameId, accessToken });
+  };
   
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -41,6 +45,7 @@ const GameDetailsScreen: React.FC<GameDetailsScreenProps> = ({ route, navigation
               {`Move ${index + 1}: (${move.x}, ${move.y}) - ${move.result ? "Hit" : "Miss"}`}
             </Text>
           ))}
+          <Button title="Map Configuration" onPress={handleMapConfiguration} />
         </View>
       ) : (
         <Text>Loading game details...</Text>
