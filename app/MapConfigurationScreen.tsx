@@ -18,9 +18,19 @@ const MapConfigurationScreen: React.FC<MapConfigurationScreenProps> = ({ route, 
   const { gameId, accessToken } = route.params;
   const [ships, setShips] = useState<Ship[]>([
     { x: 'A', y: 1, size: 2, direction: 'HORIZONTAL' },
-    { x: 'B', y: 2, size: 3, direction: 'HORIZONTAL' },
-    { x: 'C', y: 3, size: 3, direction: 'HORIZONTAL' },
+    { x: 'A', y: 3, size: 2, direction: 'HORIZONTAL' },
+    { x: 'A', y: 5, size: 2, direction: 'HORIZONTAL' },
+    { x: 'A', y: 7, size: 2, direction: 'HORIZONTAL' },
+
+    { x: 'D', y: 2, size: 3, direction: 'HORIZONTAL' },
     { x: 'D', y: 4, size: 3, direction: 'HORIZONTAL' },
+    { x: 'D', y: 6, size: 3, direction: 'HORIZONTAL' },
+
+    { x: 'A', y: 8, size: 4, direction: 'HORIZONTAL' },
+    { x: 'A', y: 9, size: 4, direction: 'HORIZONTAL' },
+
+    { x: 'A', y: 10, size: 6, direction: 'HORIZONTAL' },
+
   ]);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
