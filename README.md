@@ -1,4 +1,7 @@
-# Welcome to your Expo app 👋
+# React Native Battleships project
+- link [API](http://163.172.177.98:8081/docs/)
+
+## Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
